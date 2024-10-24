@@ -20,31 +20,6 @@ namespace LahjatunaAPI.Controllers.Favourites
         }
 
         [Authorize]
-        [HttpGet("getFavorites")]
-        public async Task<ActionResult> GetFavoritesAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var favourites = await _favouriteService.GetFavoritesAsync();
-
-                var favouriteDtos = favourites.Select(f => f.ToFavouriteDto()).ToList();
-
-                var totalFavourites = favouriteDtos.Count;
-
-                return Ok(new { totalFavourites , favourites = favouriteDtos });
-
-            } catch (Exception ex)
-            {
-                return StatusCode(500, new { message = ex.Message });
-            }
-        }
-
-        [Authorize]
         [HttpGet("getUserFavorites")]
         public async Task<ActionResult> GetUserFavoritesAsync()
         {

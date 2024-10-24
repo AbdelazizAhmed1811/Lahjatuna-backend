@@ -16,15 +16,6 @@ namespace LahjatunaAPI.Services
 
         }
 
-        public async Task<List<Favorite>> GetFavoritesAsync()
-        {
-            var favourites = await _context.Favorites
-                .Include(x => x.TranslationLog)
-                .ToListAsync();
-
-            return favourites;
-        }
-
         public async Task<List<Favorite>> GetUserFavoritesAsync(string userId)
         {
             var userFavourites = await _context.Favorites

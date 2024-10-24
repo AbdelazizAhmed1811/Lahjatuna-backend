@@ -1,6 +1,6 @@
 ﻿- User 
-	- get translations count
-	- get favorites count
+	- get translations count endpoint
+	- get favorites count endpoint
 
 - Favorites
 	- Prevent duplicate translations text

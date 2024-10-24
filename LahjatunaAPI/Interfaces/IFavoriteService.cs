@@ -5,7 +5,6 @@ namespace LahjatunaAPI.Interfaces
 {
     public interface IFavoriteService
     {
-        public Task<List<Favorite>> GetFavoritesAsync();
         public Task<List<Favorite>> GetUserFavoritesAsync(string userId);
         public Task<Favorite> GetFavoriteByIdAsync(int id);
         public Task<Favorite> AddFavoriteAsync(CreateFavoriteDto favorite, string userId);
