@@ -1,4 +1,4 @@
-﻿using LahjatunaAPI.Dtos.Favourites;
+﻿using LahjatunaAPI.Dtos.Favorites;
 using LahjatunaAPI.Models;
 
 
@@ -6,9 +6,9 @@ namespace LahjatunaAPI.Mappers
 {
     public static class FavouriteMapper
     {
-        public static FavouriteDto ToFavouriteDto(this Favorite favourite)
+        public static FavoriteDto ToFavouriteDto(this Favorite favourite)
         {
-            return new FavouriteDto
+            return new FavoriteDto
             {
                 FavoriteId = favourite.FavoriteId,
                 TranslationLogId = favourite.TranslationLogId,

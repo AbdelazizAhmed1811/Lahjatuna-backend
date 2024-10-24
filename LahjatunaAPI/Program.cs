@@ -14,8 +14,18 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: MyAllowSpecificOrigins,
+                              policy =>
+                              {
+                                  policy.AllowAnyOrigin();
+                              });
+        });
 
         builder.Services.AddDbContext<LahjatunaDbContext>(
             options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -124,11 +134,14 @@ public class Program
 
         builder.Services.AddHttpClient<TranslationModelService>();
 
-        builder.Services.AddScoped<IFavouriteService, FavouriteService>();
+        builder.Services.AddScoped<IFavoriteService, FavouriteService>();
 
 
 
         var app = builder.Build();
+
+        app.UseRouting();
+
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -141,7 +154,8 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.UseAuthorization();
+
+        app.UseCors(MyAllowSpecificOrigins);
 
         app.MapControllers();
 

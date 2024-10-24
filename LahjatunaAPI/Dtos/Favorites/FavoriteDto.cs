@@ -1,8 +1,8 @@
 ﻿using LahjatunaAPI.Dtos.TranslationLogs;
 
-namespace LahjatunaAPI.Dtos.Favourites
+namespace LahjatunaAPI.Dtos.Favorites
 {
-    public class FavouriteDto
+    public class FavoriteDto
     {
         public int FavoriteId { get; set; }
 

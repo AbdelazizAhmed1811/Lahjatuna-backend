@@ -1,0 +1,13 @@
+﻿- User 
+	- get translations count
+	- get favorites count
+
+- Favorites
+	- Prevent duplicate translations text
+
+- Feedback
+	- Add feedback endpoints (create, get, update, delete)
+
+- Translations
+	- Join Feedbacks to Translations
+

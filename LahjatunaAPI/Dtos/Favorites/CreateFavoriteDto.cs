@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LahjatunaAPI.Dtos.Favourites
+namespace LahjatunaAPI.Dtos.Favorites
 {
-    public class CreateFavouriteDto
+    public class CreateFavoriteDto
     {
         [Required]
         public int? TranslationLogId { get; set; }

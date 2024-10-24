@@ -1,12 +1,12 @@
 ﻿using LahjatunaAPI.Data;
-using LahjatunaAPI.Dtos.Favourites;
+using LahjatunaAPI.Dtos.Favorites;
 using LahjatunaAPI.Interfaces;
 using LahjatunaAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LahjatunaAPI.Services
 {
-    public class FavouriteService : IFavouriteService
+    public class FavouriteService : IFavoriteService
     {
         private readonly LahjatunaDbContext _context;
 
@@ -16,7 +16,7 @@ namespace LahjatunaAPI.Services
 
         }
 
-        public async Task<List<Favorite>> GetFavouritesAsync()
+        public async Task<List<Favorite>> GetFavoritesAsync()
         {
             var favourites = await _context.Favorites
                 .Include(x => x.TranslationLog)
@@ -25,7 +25,7 @@ namespace LahjatunaAPI.Services
             return favourites;
         }
 
-        public async Task<List<Favorite>> GetUserFavouritesAsync(string userId)
+        public async Task<List<Favorite>> GetUserFavoritesAsync(string userId)
         {
             var userFavourites = await _context.Favorites
                 .Where(x => x.UserId == userId)
@@ -35,7 +35,7 @@ namespace LahjatunaAPI.Services
             return userFavourites;
         }
 
-        public async Task<Favorite> GetFavouriteByIdAsync(int id)
+        public async Task<Favorite> GetFavoriteByIdAsync(int id)
         {
             var favourite = await _context.Favorites
                 .Include(x => x.TranslationLog)
@@ -49,7 +49,7 @@ namespace LahjatunaAPI.Services
             return favourite;
         }
 
-        public async Task<Favorite> AddFavouriteAsync(CreateFavouriteDto favourite, string userId)
+        public async Task<Favorite> AddFavoriteAsync(CreateFavoriteDto favourite, string userId)
         {
 
             var translation = await _context.TranslationLogs.FindAsync(favourite.TranslationLogId);
@@ -80,7 +80,7 @@ namespace LahjatunaAPI.Services
             return newFavourite;
         }
 
-        public async Task DeleteFavouriteAsync(int id)
+        public async Task DeleteFavoriteAsync(int id)
         {
             var favourite = await _context.Favorites.FindAsync(id);
 

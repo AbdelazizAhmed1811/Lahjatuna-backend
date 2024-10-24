@@ -1,4 +1,4 @@
-﻿using LahjatunaAPI.Dtos.Favourites;
+﻿using LahjatunaAPI.Dtos.Favorites;
 using LahjatunaAPI.Interfaces;
 using LahjatunaAPI.Mappers;
 using Microsoft.AspNetCore.Authorization;
@@ -10,18 +10,18 @@ namespace LahjatunaAPI.Controllers.Favourites
     
     [ApiController]
     [Route("api/[controller]")]
-    public class FavouritesController : ControllerBase
+    public class FavoritesController : ControllerBase
     {
-        private readonly IFavouriteService _favouriteService;
+        private readonly IFavoriteService _favouriteService;
 
-        public FavouritesController(IFavouriteService favouriteService)
+        public FavoritesController(IFavoriteService favouriteService)
         {
             _favouriteService = favouriteService;
         }
 
         [Authorize]
-        [HttpGet("getFavourites")]
-        public async Task<ActionResult> GetFavouritesAsync()
+        [HttpGet("getFavorites")]
+        public async Task<ActionResult> GetFavoritesAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -30,7 +30,7 @@ namespace LahjatunaAPI.Controllers.Favourites
 
             try
             {
-                var favourites = await _favouriteService.GetFavouritesAsync();
+                var favourites = await _favouriteService.GetFavoritesAsync();
 
                 var favouriteDtos = favourites.Select(f => f.ToFavouriteDto()).ToList();
 
@@ -45,8 +45,8 @@ namespace LahjatunaAPI.Controllers.Favourites
         }
 
         [Authorize]
-        [HttpGet("getUserFavourites")]
-        public async Task<ActionResult> GetUserFavouritesAsync()
+        [HttpGet("getUserFavorites")]
+        public async Task<ActionResult> GetUserFavoritesAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -60,7 +60,7 @@ namespace LahjatunaAPI.Controllers.Favourites
 
             try
             {
-                var favourites = await _favouriteService.GetUserFavouritesAsync(userId);
+                var favourites = await _favouriteService.GetUserFavoritesAsync(userId);
 
                 var favouriteDtos = favourites.Select(f => f.ToFavouriteDto()).ToList();
 
@@ -76,8 +76,8 @@ namespace LahjatunaAPI.Controllers.Favourites
         }
 
         [Authorize]
-        [HttpGet("getFavourite/{id}")]
-        public async Task<ActionResult> GetFavouriteByIdAsync(int id)
+        [HttpGet("getFavorite/{id}")]
+        public async Task<ActionResult> GetFavoriteByIdAsync(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace LahjatunaAPI.Controllers.Favourites
 
             try
             {
-                var favourite = await _favouriteService.GetFavouriteByIdAsync(id);
+                var favourite = await _favouriteService.GetFavoriteByIdAsync(id);
 
                 var favouriteDto = favourite.ToFavouriteDto();
 
@@ -99,8 +99,8 @@ namespace LahjatunaAPI.Controllers.Favourites
         }
 
         [Authorize]
-        [HttpPost("addFavourite")]
-        public async Task<ActionResult> AddFavouriteAsync([FromBody] CreateFavouriteDto favourite)
+        [HttpPost("addFavorite")]
+        public async Task<ActionResult> AddFavoriteAsync([FromBody] CreateFavoriteDto favourite)
         {
             if (!ModelState.IsValid)
             {
@@ -114,7 +114,7 @@ namespace LahjatunaAPI.Controllers.Favourites
 
             try
             {
-                var newFavourite = await _favouriteService.AddFavouriteAsync(favourite, userId);
+                var newFavourite = await _favouriteService.AddFavoriteAsync(favourite, userId);
 
                 var newFavouriteDto = newFavourite.ToFavouriteDto();
 
@@ -127,8 +127,8 @@ namespace LahjatunaAPI.Controllers.Favourites
         }
 
         [Authorize]
-        [HttpDelete("deleteFavourite/{id}")]
-        public async Task<ActionResult> DeleteFavouriteAsync(int id)
+        [HttpDelete("deleteFavorite/{id}")]
+        public async Task<ActionResult> DeleteFavoriteAsync(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -137,7 +137,7 @@ namespace LahjatunaAPI.Controllers.Favourites
 
             try
             {
-                await _favouriteService.DeleteFavouriteAsync(id);
+                await _favouriteService.DeleteFavoriteAsync(id);
 
                 return Ok(new { message = "favourite deleted successfully."});
 
