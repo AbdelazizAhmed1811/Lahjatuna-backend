@@ -7,7 +7,6 @@ using System.Security.Claims;
 
 namespace LahjatunaAPI.Controllers.Favourites
 {
-    
     [ApiController]
     [Route("api/[controller]")]
     public class FavoritesController : ControllerBase
@@ -42,7 +41,6 @@ namespace LahjatunaAPI.Controllers.Favourites
                 var totalFavourites = favouriteDtos.Count;
 
                 return Ok(new { totalFavourites, favourites = favouriteDtos });
-
             }
             catch (Exception ex)
             {
@@ -66,8 +64,8 @@ namespace LahjatunaAPI.Controllers.Favourites
                 var favouriteDto = favourite.ToFavouriteDto();
 
                 return Ok(new { favouriteDto });
-
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, new { message = ex.Message });
             }
@@ -90,13 +88,18 @@ namespace LahjatunaAPI.Controllers.Favourites
             try
             {
                 var newFavourite = await _favouriteService.AddFavoriteAsync(favourite, userId);
-
                 var newFavouriteDto = newFavourite.ToFavouriteDto();
 
                 return Ok(new { newFavouriteDto });
-
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
+                // Check for specific duplicate message
+                if (ex.Message.Contains("is already in your favorites"))
+                {
+                    return Conflict(new { message = ex.Message }); // Use 409 Conflict status
+                }
+
                 return StatusCode(500, new { message = ex.Message });
             }
         }
@@ -114,9 +117,9 @@ namespace LahjatunaAPI.Controllers.Favourites
             {
                 await _favouriteService.DeleteFavoriteAsync(id);
 
-                return Ok(new { message = "favourite deleted successfully."});
-
-            } catch (Exception ex)
+                return Ok(new { message = "Favourite deleted successfully." });
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, new { message = ex.Message });
             }

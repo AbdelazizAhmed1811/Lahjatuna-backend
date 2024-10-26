@@ -21,3 +21,8 @@ public partial class Feedback
 
     public virtual User? User { get; set; }
 }
+
+
+
+
+

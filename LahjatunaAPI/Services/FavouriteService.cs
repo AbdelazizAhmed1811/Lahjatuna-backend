@@ -13,7 +13,6 @@ namespace LahjatunaAPI.Services
         public FavouriteService(LahjatunaDbContext context)
         {
             _context = context;
-
         }
 
         public async Task<List<Favorite>> GetUserFavoritesAsync(string userId)
@@ -31,7 +30,7 @@ namespace LahjatunaAPI.Services
             var favourite = await _context.Favorites
                 .Include(x => x.TranslationLog)
                 .FirstOrDefaultAsync(x => x.FavoriteId == id);
-               
+
             if (favourite == null)
             {
                 throw new Exception($"Favourite with Id {id} not found");
@@ -42,20 +41,20 @@ namespace LahjatunaAPI.Services
 
         public async Task<Favorite> AddFavoriteAsync(CreateFavoriteDto favourite, string userId)
         {
-
             var translation = await _context.TranslationLogs.FindAsync(favourite.TranslationLogId);
 
-            if (translation == null) 
+            if (translation == null)
             {
                 throw new Exception($"Translation with Id {favourite.TranslationLogId} not found");
             }
 
-
-            var existingFavourite = await _context.Favorites.FirstOrDefaultAsync(x => (x.UserId == userId) && (x.TranslationLogId == favourite.TranslationLogId));
+            // Check if a favorite already exists with the same TranslationLogId for the user
+            var existingFavourite = await _context.Favorites
+                .FirstOrDefaultAsync(x => x.UserId == userId && x.TranslationLogId == favourite.TranslationLogId);
 
             if (existingFavourite != null)
             {
-                throw new Exception($"Translation with Id {favourite.TranslationLogId} is already in this user favourites");
+                throw new Exception($"The translation '{translation.SourceText}' is already in your favorites.");
             }
 
             var newFavourite = new Favorite
@@ -82,7 +81,6 @@ namespace LahjatunaAPI.Services
 
             _context.Favorites.Remove(favourite);
             await _context.SaveChangesAsync();
-
         }
     }
 }

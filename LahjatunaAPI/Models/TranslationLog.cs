@@ -22,6 +22,7 @@ public partial class TranslationLog
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+    
 
     public virtual Language? SourceLanguage { get; set; }
 

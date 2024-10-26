@@ -1,4 +1,5 @@
-﻿using LahjatunaAPI.Dtos.TranslationLogs;
+﻿using LahjatunaAPI.Dtos.Feedbacks;
+using LahjatunaAPI.Dtos.TranslationLogs;
 using LahjatunaAPI.Models;
 
 namespace LahjatunaAPI.Mappers
@@ -15,7 +16,15 @@ namespace LahjatunaAPI.Mappers
                 TargetLanguageId = translationLog.TargetLanguageId,
                 SourceText = translationLog.SourceText,
                 TargetText = translationLog.TargetText,
-                CreatedAt = translationLog.CreatedAt
+                CreatedAt = translationLog.CreatedAt,
+                Feedbacks = translationLog.Feedbacks.Select(f => new FeedbackDto
+                {
+                    FeedbackId = f.FeedbackId,
+                    UserId = f.UserId,
+                    Rating = f.Rating,
+                    Comment = f.Comment,
+                    CreatedAt = f.CreatedAt
+                }).ToList() // Convert Feedbacks to FeedbackDto
             };
         }
     }
