@@ -1,5 +1,5 @@
-﻿- User 
-	- get translations count endpoint
+﻿[shahd]
+- User 
 	- get favorites count endpoint
 
 - Favorites
@@ -9,5 +9,15 @@
 	- Add feedback endpoints (create, get, update, delete)
 
 - Translations
-	- Join Feedbacks to Translations
+	- Return Translation with its Feedbacks 
 
+
+[to be done]
+- Auth
+	- Add Google Auth
+	- Add Facebook Auth
+	- Add Apple Auth
+
+- Token
+	- Add refresh token endpoint
+	- create sign out 

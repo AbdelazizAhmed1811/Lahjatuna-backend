@@ -79,10 +79,11 @@ public class Program
             options.Lockout.AllowedForNewUsers = true;
         });
         builder.Services.AddAuthorization();
-        builder.Services.AddControllers()
-            .AddNewtonsoftJson(options =>
-            options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            );
+
+        builder.Services.AddControllers();
+            //.AddNewtonsoftJson(options =>
+            //options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            //);
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -135,6 +136,8 @@ public class Program
         builder.Services.AddHttpClient<TranslationModelService>();
 
         builder.Services.AddScoped<IFavoriteService, FavouriteService>();
+
+        builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 
 

@@ -19,7 +19,9 @@ namespace LahjatunaAPI.Services
 
         public async Task<List<TranslationLog>> GetTranslationsAsync()
         {
-            var translations = await _context.TranslationLogs.ToListAsync();
+            var translations = await _context.TranslationLogs
+                .Include(t => t.Feedbacks)
+                .ToListAsync();
 
             return translations;
         }
@@ -27,7 +29,9 @@ namespace LahjatunaAPI.Services
         public async Task<List<TranslationLog>> GetUserTranslationsAsync(string userId)
         {
 
-            var userTranslations = await _context.TranslationLogs.Where(x => x.UserId == userId).ToListAsync();
+            var userTranslations = await _context.TranslationLogs.Where(x => x.UserId == userId)
+                .Include(t => t.Feedbacks)
+                .ToListAsync();
 
             return userTranslations;
         }

@@ -14,18 +14,18 @@ namespace LahjatunaAPI.Services
             _context = context;
         }
 
-        public async Task<Feedback> CreateFeedback(CreateFeedbackDto feedbackDto)
+        public async Task<Feedback> CreateFeedback(CreateFeedbackDto feedbackDto, string userId)
         {
             var feedback = new Feedback
             {
                 TranslationLogId = feedbackDto.TranslationLogId,
-                UserId = feedbackDto.UserId,
+                UserId = userId,
                 Rating = feedbackDto.Rating,
                 Comment = feedbackDto.Comment,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
-            _context.Feedbacks.Add(feedback);
+            await _context.Feedbacks.AddAsync(feedback);
             await _context.SaveChangesAsync();
             return feedback;
         }

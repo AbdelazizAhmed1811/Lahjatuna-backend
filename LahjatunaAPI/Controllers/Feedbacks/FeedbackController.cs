@@ -2,6 +2,7 @@
 using LahjatunaAPI.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LahjatunaAPI.Controllers.Feedbacks
 {
@@ -20,7 +21,18 @@ namespace LahjatunaAPI.Controllers.Feedbacks
         [HttpPost]
         public async Task<IActionResult> CreateFeedback(CreateFeedbackDto feedbackDto)
         {
-            var feedback = await _feedbackService.CreateFeedback(feedbackDto);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User not found" });
+
+
+            var feedback = await _feedbackService.CreateFeedback(feedbackDto, userId);
             return CreatedAtAction(nameof(GetFeedback), new { id = feedback.FeedbackId }, feedback);
         }
 
