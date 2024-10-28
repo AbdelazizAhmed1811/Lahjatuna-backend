@@ -55,6 +55,7 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
             }
         }
 
+
         [Authorize(Roles = "admin")]
         [HttpGet("getTranslation/{id}")]
         public async Task<ActionResult> GetTranslationByIdAsync(int id)
@@ -68,11 +69,24 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
             {
                 var translation = await _TranslationLogService.GetTranslationByIdAsync(id);
 
+                if (translation == null)
+                    return NotFound(new { message = "Translation not found" });
+
                 var translationDto = translation.ToTranslationLogDto();
 
-                return Ok(new { translationDto });
+                // Join Feedbacks
+                var feedbacks = translation.Feedbacks.Select(f => new
+                {
+                    
+                    f.Rating,
+                    f.Comment
+                    
+                }).ToList();
 
-            } catch (Exception ex)
+                return Ok(new { translationDto, feedbacks });
+
+            }
+            catch (Exception ex)
             {
                 return StatusCode(500, new { message = ex.Message });
             }

@@ -1,12 +1,12 @@
 ﻿using LahjatunaAPI.Dtos.Feedbacks;
 using LahjatunaAPI.Interfaces;
+using LahjatunaAPI.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace LahjatunaAPI.Controllers.Feedbacks
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class FeedbackController : ControllerBase
@@ -18,8 +18,9 @@ namespace LahjatunaAPI.Controllers.Feedbacks
             _feedbackService = feedbackService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateFeedback(CreateFeedbackDto feedbackDto)
+        [Authorize]
+        [HttpPost("addFeedback")]
+        public async Task<ActionResult> AddFeedbackAsync([FromBody] CreateFeedbackDto feedbackDto)
         {
             if (!ModelState.IsValid)
             {
@@ -31,34 +32,84 @@ namespace LahjatunaAPI.Controllers.Feedbacks
             if (string.IsNullOrEmpty(userId))
                 return Unauthorized(new { message = "User not found" });
 
+            try
+            {
+                var newFeedback = await _feedbackService.CreateFeedbackAsync(feedbackDto, userId);
+                var newFeedbackDto = newFeedback.ToFeedbackDto();
 
-            var feedback = await _feedbackService.CreateFeedback(feedbackDto, userId);
-            return CreatedAtAction(nameof(GetFeedback), new { id = feedback.FeedbackId }, feedback);
+                return Ok(new { newFeedbackDto });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetFeedback(int id)
+        [Authorize]
+        [HttpGet("getFeedback/{id}")]
+        public async Task<ActionResult> GetFeedbackByIdAsync(int id)
         {
-            var feedback = await _feedbackService.GetFeedbackById(id);
-            if (feedback == null) return NotFound();
-            return Ok(feedback);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var feedback = await _feedbackService.GetFeedbackByIdAsync(id);
+
+                var feedbackDto = feedback.ToFeedbackDto();
+
+                return Ok(new { feedbackDto });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateFeedback(int id, UpdateFeedbackDto feedbackDto)
+
+        [Authorize]
+        [HttpPut("updateFeedback/{id}")]
+        public async Task<ActionResult> UpdateFeedbackAsync(int id, [FromBody] UpdateFeedbackDto feedbackDto)
         {
-            var result = await _feedbackService.UpdateFeedback(id, feedbackDto);
-            if (!result) return NotFound();
-            return NoContent();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                var updatedFeedback = await _feedbackService.UpdateFeedbackAsync(id, feedbackDto);
+                var updatedFeedbackDto = updatedFeedback.ToFeedbackDto();
+
+                return Ok(new { updatedFeedbackDto });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFeedback(int id)
+        [Authorize]
+        [HttpDelete("deleteFeedback/{id}")]
+        public async Task<ActionResult> DeleteFeedbackAsync(int id)
         {
-            var result = await _feedbackService.DeleteFeedback(id);
-            if (!result) return NotFound();
-            return NoContent();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _feedbackService.DeleteFeedbackAsync(id);
+
+                return Ok(new { message = "Feedback deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
     }
-
 }

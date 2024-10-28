@@ -17,6 +17,7 @@ namespace LahjatunaAPI.Mappers
                 SourceText = translationLog.SourceText,
                 TargetText = translationLog.TargetText,
                 CreatedAt = translationLog.CreatedAt,
+
                 Feedbacks = translationLog.Feedbacks.Select(f => new FeedbackDto
                 {
                     FeedbackId = f.FeedbackId,
@@ -24,7 +25,8 @@ namespace LahjatunaAPI.Mappers
                     Rating = f.Rating,
                     Comment = f.Comment,
                     CreatedAt = f.CreatedAt
-                }).ToList() // Convert Feedbacks to FeedbackDto
+                }).ToList()
+
             };
         }
     }

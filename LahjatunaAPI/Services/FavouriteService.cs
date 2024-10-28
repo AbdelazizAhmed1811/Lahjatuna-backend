@@ -48,7 +48,6 @@ namespace LahjatunaAPI.Services
                 throw new Exception($"Translation with Id {favourite.TranslationLogId} not found");
             }
 
-            // Check if a favorite already exists with the same TranslationLogId for the user
             var existingFavourite = await _context.Favorites
                 .FirstOrDefaultAsync(x => x.UserId == userId && x.TranslationLogId == favourite.TranslationLogId);
 
@@ -82,5 +81,19 @@ namespace LahjatunaAPI.Services
             _context.Favorites.Remove(favourite);
             await _context.SaveChangesAsync();
         }
+        
+        public async Task DeleteAllFavoritesAsync()
+        {
+            var allFavourites = _context.Favorites.ToList();
+
+            if (!allFavourites.Any())
+            { 
+                throw new Exception("No favourites found to delete.");
+            }
+
+            _context.Favorites.RemoveRange(allFavourites);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

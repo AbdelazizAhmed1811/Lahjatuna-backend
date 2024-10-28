@@ -20,6 +20,7 @@ public partial class Feedback
     public virtual TranslationLog? TranslationLog { get; set; }
 
     public virtual User? User { get; set; }
+
 }
 
 

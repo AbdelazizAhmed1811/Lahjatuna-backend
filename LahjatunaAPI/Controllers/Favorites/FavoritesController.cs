@@ -94,10 +94,9 @@ namespace LahjatunaAPI.Controllers.Favourites
             }
             catch (Exception ex)
             {
-                // Check for specific duplicate message
                 if (ex.Message.Contains("is already in your favorites"))
                 {
-                    return Conflict(new { message = ex.Message }); // Use 409 Conflict status
+                    return Conflict(new { message = ex.Message }); 
                 }
 
                 return StatusCode(500, new { message = ex.Message });
@@ -124,5 +123,26 @@ namespace LahjatunaAPI.Controllers.Favourites
                 return StatusCode(500, new { message = ex.Message });
             }
         }
+        [Authorize]
+        [HttpDelete("deleteAllFavorites")]
+        public async Task<ActionResult> DeleteAllFavoritesAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                await _favouriteService.DeleteAllFavoritesAsync();
+
+                return Ok(new { message = "All favourites deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
     }
 }

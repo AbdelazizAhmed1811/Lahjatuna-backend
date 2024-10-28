@@ -6,11 +6,10 @@ namespace LahjatunaAPI.Interfaces
 {
     public interface IFeedbackService
     {
-        Task<Feedback> CreateFeedback(CreateFeedbackDto feedbackDto, string userId);
-        Task<Feedback> GetFeedbackById(int id);
-        Task<bool> UpdateFeedback(int id, UpdateFeedbackDto feedbackDto);
-
-        Task<bool> DeleteFeedback(int id);
+        Task<Feedback> CreateFeedbackAsync(CreateFeedbackDto feedbackDto, string userId);
+        Task<Feedback> GetFeedbackByIdAsync(int id);
+        Task<Feedback> UpdateFeedbackAsync(int id, UpdateFeedbackDto feedbackDto);
+        Task DeleteFeedbackAsync(int id);
     }
 
 }

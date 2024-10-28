@@ -9,6 +9,7 @@ namespace LahjatunaAPI.Interfaces
         Task<Favorite> GetFavoriteByIdAsync(int id);
         Task<Favorite> AddFavoriteAsync(CreateFavoriteDto favorite, string userId);
         Task DeleteFavoriteAsync(int id);
+        Task DeleteAllFavoritesAsync();
     }
 }
 

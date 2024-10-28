@@ -11,7 +11,7 @@ namespace LahjatunaAPI.Dtos.TranslationLogs
         public string SourceText { get; set; } = null!;
         public string TargetText { get; set; } = null!;
         public DateTime? CreatedAt { get; set; }
-        public List<FeedbackDto> Feedbacks { get; set; } = new List<FeedbackDto>(); // Add this line
+        public List<FeedbackDto> Feedbacks { get; set; } = new List<FeedbackDto>();
     }
 }
 

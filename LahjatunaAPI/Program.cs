@@ -81,9 +81,9 @@ public class Program
         builder.Services.AddAuthorization();
 
         builder.Services.AddControllers();
-            //.AddNewtonsoftJson(options =>
-            //options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
-            //);
+        //.AddNewtonsoftJson(options =>
+        //options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        //);
 
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
@@ -139,7 +139,7 @@ public class Program
 
         builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
-
+        builder.Services.AddScoped<IUserService, UserService>();
 
         var app = builder.Build();
 

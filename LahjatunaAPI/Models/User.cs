@@ -16,9 +16,11 @@ public partial class User: IdentityUser
 
     //public string? Role { get; set; }
 
-    public int? TranslationsCount { get; set; }
+    //public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    public int? TranslationsCount { get; set; }
     public int? FeedbackCount { get; set; }
+
 
     public virtual ICollection<Favorite> Favorites { get; set; } = new List<Favorite>();
 
