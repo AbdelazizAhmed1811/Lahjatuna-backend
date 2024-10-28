@@ -60,38 +60,21 @@ namespace LahjatunaAPI.Services
         }
 
 
-        //public async Task<Feedback> UpdateFeedbackAsync(int id, UpdateFeedbackDto feedbackDto)
-        //{
-        //    var translationLog = await _context.TranslationLogs
-        //        .Include(t => t.Feedbacks)
-        //        .ThenInclude(t => t.TranslationLog)
-        //        //.Include(u => u.UserId)
-        //        .FirstOrDefaultAsync(x => x.TranslationLogId == id);
-
-        //    var feedbacks = translationLog.Feedbacks.ToList();
-        //    var feedback = feedbacks[0];
-        //    if (feedback == null)
-        //    {
-        //        throw new Exception($"Feedback with Id {id} not found.");
-        //    }
-
-        //    feedback.Rating = feedbackDto.Rating?? feedback.Rating;
-        //    feedback.Comment = feedbackDto.Comment?? feedback.Comment;
-
-        //    _context.Feedbacks.Update(feedback);  
-        //    await _context.SaveChangesAsync();
-
-        //    return feedback;
-        //}
-        public async Task<Feedback> UpdateFeedbackAsync(int translationLogId, UpdateFeedbackDto feedbackDto)
+        public async Task<TranslationLog> UpdateFeedbackAsync(int translationLogId, UpdateFeedbackDto feedbackDto)
         {
+            var translation = await _context.TranslationLogs.FindAsync(translationLogId);
+
+            if (translation == null)
+            {
+                throw new Exception($"Translation with Id {translationLogId} not found.");
+            }
+
             var feedback = await _context.Feedbacks
-                .Where(f => f.TranslationLogId == translationLogId) // Ensure TranslationLogId matches
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(x => x.TranslationLogId == translationLogId);
 
             if (feedback == null)
             {
-                throw new Exception($"Feedback with TranslationLogId {translationLogId} not found.");
+                throw new Exception($"Feedback for the translation '{translation.SourceText}' not found.");
             }
 
             feedback.Rating = feedbackDto.Rating ?? feedback.Rating;
@@ -100,8 +83,9 @@ namespace LahjatunaAPI.Services
             _context.Feedbacks.Update(feedback);
             await _context.SaveChangesAsync();
 
-            return feedback;
+            return translation;
         }
+
 
 
         public async Task DeleteFeedbackAsync(int id)

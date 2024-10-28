@@ -13,8 +13,7 @@ namespace LahjatunaAPI.Mappers
                 TranslationLogId = feedback.TranslationLogId,
                 Rating = feedback.Rating,
                 Comment = feedback.Comment,
-                CreatedAt = feedback.CreatedAt,
-                TranslationLog = feedback.TranslationLog.ToTranslationLogDto()
+                CreatedAt = feedback.CreatedAt
             };
         }
     }

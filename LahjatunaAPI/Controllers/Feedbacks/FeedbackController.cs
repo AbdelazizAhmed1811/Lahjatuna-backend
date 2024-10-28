@@ -80,10 +80,10 @@ namespace LahjatunaAPI.Controllers.Feedbacks
 
             try
             {
-                var updatedFeedback = await _feedbackService.UpdateFeedbackAsync(id, feedbackDto);
-                var updatedFeedbackDto = updatedFeedback.ToFeedbackDto();
+                var updatedTranslation = await _feedbackService.UpdateFeedbackAsync(id, feedbackDto);
+                var updatedTranslationDto = updatedTranslation.ToTranslationLogDto();
 
-                return Ok(new { updatedFeedbackDto });
+                return Ok(new { updatedTranslationDto });
             }
             catch (Exception ex)
             {

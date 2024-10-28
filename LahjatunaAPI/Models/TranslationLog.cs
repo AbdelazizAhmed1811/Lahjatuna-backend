@@ -23,7 +23,6 @@ public partial class TranslationLog
 
     public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
     
-
     public virtual Language? SourceLanguage { get; set; }
 
     public virtual Language? TargetLanguage { get; set; }
