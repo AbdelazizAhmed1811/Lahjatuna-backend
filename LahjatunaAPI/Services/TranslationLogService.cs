@@ -17,32 +17,27 @@ namespace LahjatunaAPI.Services
             _translationModelService = translationModelService;
         }
 
-        public async Task<List<TranslationLog>> GetTranslationsAsync()
-        {
-            var translations = await _context.TranslationLogs
-                .Include(t => t.Feedbacks)
-                .ToListAsync();
-
-            return translations;
-        }
-
         public async Task<List<TranslationLog>> GetUserTranslationsAsync(string userId)
         {
 
-            var userTranslations = await _context.TranslationLogs.Where(x => x.UserId == userId)
+            var userTranslations = await _context.TranslationLogs
+                .Where(x => x.UserId == userId)
                 .Include(t => t.Feedbacks)
                 .ToListAsync();
 
             return userTranslations;
         }
 
-        public async Task<TranslationLog> GetTranslationByIdAsync(int id)
+        public async Task<TranslationLog> GetTranslationByIdAsync(int translationId, string userId)
         {
-            var translation = await _context.TranslationLogs.FindAsync(id);
+            var translation = await _context.TranslationLogs
+                .Where(t => t.UserId == userId)
+                .Include(t => t.Feedbacks)
+                .FirstOrDefaultAsync(t => t.TranslationLogId == translationId);
                
             if (translation == null)
             {
-                throw new Exception($"Translation with Id {id} not found");
+                throw new Exception($"Translation with Id {translationId} not found");
             }
 
             return translation;
@@ -88,13 +83,15 @@ namespace LahjatunaAPI.Services
             return newTranslation;
         }
 
-        public async Task DeleteTranslationAsync(int id)
+        public async Task DeleteTranslationAsync(int translationId, string userId)
         {
-            var translation = await _context.TranslationLogs.FindAsync(id);
+            var translation = await _context.TranslationLogs
+                .Where(t => t.UserId == userId)
+                .FirstOrDefaultAsync(t => t.TranslationLogId == translationId);
 
             if (translation == null)
             {
-                throw new Exception($"Translation with Id {id} not found");
+                throw new Exception($"Translation with Id {translationId} not found");
             }
 
             _context.TranslationLogs.Remove(translation);

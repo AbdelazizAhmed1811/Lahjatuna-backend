@@ -135,9 +135,11 @@ public class Program
 
         builder.Services.AddHttpClient<TranslationModelService>();
 
-        builder.Services.AddScoped<IFavoriteService, FavouriteService>();
+        builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 
         builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+
+        builder.Services.AddScoped<IUserService, UserService>();
 
 
 

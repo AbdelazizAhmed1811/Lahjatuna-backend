@@ -7,19 +7,19 @@ using System.Security.Claims;
 
 namespace LahjatunaAPI.Controllers.Favourites
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class FavoritesController : ControllerBase
     {
-        private readonly IFavoriteService _favouriteService;
+        private readonly IFavoriteService _favoriteService;
 
         public FavoritesController(IFavoriteService favouriteService)
         {
-            _favouriteService = favouriteService;
+            _favoriteService = favouriteService;
         }
 
-        [Authorize]
-        [HttpGet("getUserFavorites")]
+        [HttpGet]
         public async Task<ActionResult> GetUserFavoritesAsync()
         {
             if (!ModelState.IsValid)
@@ -34,13 +34,13 @@ namespace LahjatunaAPI.Controllers.Favourites
 
             try
             {
-                var favourites = await _favouriteService.GetUserFavoritesAsync(userId);
+                var favorites = await _favoriteService.GetUserFavoritesAsync(userId);
 
-                var favouriteDtos = favourites.Select(f => f.ToFavouriteDto()).ToList();
+                var favoriteDtos = favorites.Select(f => f.ToFavoriteDto()).ToList();
 
-                var totalFavourites = favouriteDtos.Count;
+                var totalFavorites = favoriteDtos.Count;
 
-                return Ok(new { totalFavourites, favourites = favouriteDtos });
+                return Ok(new { totalFavorites, favorites = favoriteDtos });
             }
             catch (Exception ex)
             {
@@ -48,32 +48,8 @@ namespace LahjatunaAPI.Controllers.Favourites
             }
         }
 
-        [Authorize]
-        [HttpGet("getFavorite/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetFavoriteByIdAsync(int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var favourite = await _favouriteService.GetFavoriteByIdAsync(id);
-
-                var favouriteDto = favourite.ToFavouriteDto();
-
-                return Ok(new { favouriteDto });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = ex.Message });
-            }
-        }
-
-        [Authorize]
-        [HttpPost("addFavorite")]
-        public async Task<ActionResult> AddFavoriteAsync([FromBody] CreateFavoriteDto favourite)
         {
             if (!ModelState.IsValid)
             {
@@ -87,25 +63,46 @@ namespace LahjatunaAPI.Controllers.Favourites
 
             try
             {
-                var newFavourite = await _favouriteService.AddFavoriteAsync(favourite, userId);
-                var newFavouriteDto = newFavourite.ToFavouriteDto();
+                var favorite = await _favoriteService.GetFavoriteByIdAsync(id, userId);
 
-                return Ok(new { newFavouriteDto });
+                var favoriteDto = favorite.ToFavoriteDto();
+
+                return Ok(new { favorite = favoriteDto });
             }
             catch (Exception ex)
             {
-                // Check for specific duplicate message
-                if (ex.Message.Contains("is already in your favorites"))
-                {
-                    return Conflict(new { message = ex.Message }); // Use 409 Conflict status
-                }
-
                 return StatusCode(500, new { message = ex.Message });
             }
         }
 
-        [Authorize]
-        [HttpDelete("deleteFavorite/{id}")]
+        [HttpPost]
+        public async Task<ActionResult> AddFavoriteAsync([FromBody] CreateFavoriteDto favorite)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User not found" });
+
+            try
+            {
+                var newFavorite = await _favoriteService.AddFavoriteAsync(favorite, userId);
+                var newFavoriteDto = newFavorite.ToFavoriteDto();
+
+                return Ok(new { favorite = newFavoriteDto });
+                //return CreatedAtAction(nameof(GetFavoriteByIdAsync), new { id = newFavorite.FavoriteId }, newFavorite);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteFavoriteAsync(int id)
         {
             if (!ModelState.IsValid)
@@ -113,11 +110,16 @@ namespace LahjatunaAPI.Controllers.Favourites
                 return BadRequest(ModelState);
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User not found" });
+
             try
             {
-                await _favouriteService.DeleteFavoriteAsync(id);
+                await _favoriteService.DeleteFavoriteAsync(id, userId);
 
-                return Ok(new { message = "Favourite deleted successfully." });
+                return Ok(new { message = "Favorite deleted successfully." });
             }
             catch (Exception ex)
             {

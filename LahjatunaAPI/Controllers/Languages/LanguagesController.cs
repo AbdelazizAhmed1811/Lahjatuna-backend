@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LahjatunaAPI.Controllers.Languages
 {
-    
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class LanguagesController : ControllerBase
@@ -18,8 +18,7 @@ namespace LahjatunaAPI.Controllers.Languages
             _languageService = languageService;
         }
 
-        [Authorize]
-        [HttpGet("getAllLanguages")]
+        [HttpGet]
         public async Task<ActionResult> GetAllLanguagesAsync()
         {
             if (!ModelState.IsValid)
@@ -43,8 +42,7 @@ namespace LahjatunaAPI.Controllers.Languages
             }
         }
 
-        [Authorize]
-        [HttpGet("getLanguage/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetLanguageByIdAsync(int id)
         {
             if (!ModelState.IsValid)
@@ -58,7 +56,7 @@ namespace LahjatunaAPI.Controllers.Languages
 
                 var languageDto = language.ToLanguageDto();
 
-                return Ok(new { languageDto });
+                return Ok(new { language = languageDto });
 
             } catch (Exception ex)
             {
@@ -67,7 +65,7 @@ namespace LahjatunaAPI.Controllers.Languages
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPost("addLanguage")]
+        [HttpPost]
         public async Task<ActionResult> AddLanguageAsync([FromBody] CreateLanguageDto language)
         {
             if (!ModelState.IsValid)
@@ -81,7 +79,7 @@ namespace LahjatunaAPI.Controllers.Languages
 
                 var newLanguageDto = newLanguage.ToLanguageDto();
 
-                return Ok(new { newLanguageDto });
+                return Ok(new { language = newLanguageDto });
 
             } catch (Exception ex)
             {
@@ -90,7 +88,7 @@ namespace LahjatunaAPI.Controllers.Languages
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPut("updateLanguage")]
+        [HttpPut]
         public async Task<ActionResult> UpdateLanguageAsync([FromBody] UpdateLanguageDto language)
         {
             if (!ModelState.IsValid)
@@ -104,7 +102,7 @@ namespace LahjatunaAPI.Controllers.Languages
 
                 var updatedLanguageDto = updatedLanguage.ToLanguageDto();
 
-                return Ok(new { updatedLanguageDto });
+                return Ok(new { language = updatedLanguageDto });
 
             } catch (Exception ex)
             {
@@ -113,7 +111,7 @@ namespace LahjatunaAPI.Controllers.Languages
         }
 
         [Authorize(Roles = "admin")]
-        [HttpDelete("deleteLanguage/{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteLanguageAsync(int id)
         {
             if (!ModelState.IsValid)
@@ -133,6 +131,5 @@ namespace LahjatunaAPI.Controllers.Languages
             }
         }
 
-        
     }
 }

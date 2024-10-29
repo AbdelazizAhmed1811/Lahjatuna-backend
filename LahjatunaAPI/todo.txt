@@ -1,15 +1,15 @@
 ﻿[shahd]
 - User 
-	- get favorites count endpoint
+	- get favorites count endpoint                                  Done
 
 - Favorites
-	- Prevent duplicate translations text
+	- Prevent duplicate translations text                           not needed
 
 - Feedback
-	- Add feedback endpoints (create, get, update, delete)
+	- Add feedback endpoints (create, get, update, delete)          Done
 
 - Translations
-	- Return Translation with its Feedbacks 
+	- Return Translation with its Feedbacks                         Done
 
 
 [to be done]
