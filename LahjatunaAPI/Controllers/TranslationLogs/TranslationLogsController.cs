@@ -7,6 +7,7 @@ using System.Security.Claims;
 
 namespace LahjatunaAPI.Controllers.TranslationLogs
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TranslationLogsController : ControllerBase
@@ -18,45 +19,7 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
             _TranslationLogService = TranslationLogService;
         }
 
-        [Authorize]
-        [HttpGet("getAllTranslations")]
-        public async Task<ActionResult> GetAllTranslationsAsync(int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            try
-            {
-                var translation = await _TranslationLogService.GetTranslationByIdAsync(id);
-
-                if (translation == null)
-                    return NotFound(new { message = "Translation not found" });
-
-                var translationDto = translation.ToTranslationLogDto();
-
-                // Join Feedbacks
-                var feedbacks = translation.Feedbacks.Select(f => new
-                {
-                    f.FeedbackId,
-                    f.UserId,
-                    f.Rating,
-                    f.Comment,
-                    f.CreatedAt
-                }).ToList();
-
-                return Ok(new { translationDto, feedbacks });
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = ex.Message });
-            }
-        }
-
-        [Authorize(Roles = "admin")]
-        [HttpGet("getTranslation/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetTranslationByIdAsync(int id)
         {
             if (!ModelState.IsValid)
@@ -64,13 +27,18 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
                 return BadRequest(ModelState);
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User not found" });
+
             try
             {
-                var translation = await _TranslationLogService.GetTranslationByIdAsync(id);
+                var translation = await _TranslationLogService.GetTranslationByIdAsync(id, userId);
 
                 var translationDto = translation.ToTranslationLogDto();
 
-                return Ok(new { translationDto });
+                return Ok(new { translation = translationDto });
 
             } catch (Exception ex)
             {
@@ -78,8 +46,7 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
             }
         }
 
-        [Authorize]
-        [HttpGet("getUserTranslations")]
+        [HttpGet]
         public async Task<ActionResult> GetUserTranslationsAsync()
         {
             if (!ModelState.IsValid)
@@ -108,8 +75,7 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
             }
         }
 
-        [Authorize]
-        [HttpPost("addTranslation")]
+        [HttpPost]
         public async Task<ActionResult> AddTranslationAsync([FromBody] CreateTranslationLogDto translation)
         {
             if (!ModelState.IsValid)
@@ -128,7 +94,7 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
 
                 var newTranslationDto = newTranslation.ToTranslationLogDto();
 
-                return Ok(new { newTranslationDto });
+                return Ok(new { Translation = newTranslationDto });
 
             } catch (Exception ex)
             {
@@ -136,8 +102,7 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
             }
         }
 
-        [Authorize]
-        [HttpDelete("deleteTranslation/{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteTranslationAsync(int id)
         {
             if (!ModelState.IsValid)
@@ -145,9 +110,14 @@ namespace LahjatunaAPI.Controllers.TranslationLogs
                 return BadRequest(ModelState);
             }
 
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(new { message = "User not found" });
+
             try
             {
-                await _TranslationLogService.DeleteTranslationAsync(id);
+                await _TranslationLogService.DeleteTranslationAsync(id, userId);
 
                 return Ok(new { message = "Translation deleted successfully."});
 

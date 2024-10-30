@@ -6,7 +6,7 @@ namespace LahjatunaAPI.Mappers
 {
     public static class FavouriteMapper
     {
-        public static FavoriteDto ToFavouriteDto(this Favorite favourite)
+        public static FavoriteDto ToFavoriteDto(this Favorite favourite)
         {
             return new FavoriteDto
             {

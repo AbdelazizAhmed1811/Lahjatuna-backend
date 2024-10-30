@@ -38,7 +38,7 @@ public class Program
             options.Password.RequireLowercase = true;
             options.Password.RequireUppercase = true;
             options.Password.RequireNonAlphanumeric = true;
-            options.Password.RequiredLength = 12;
+            options.Password.RequiredLength = 10;
         }).AddEntityFrameworkStores<LahjatunaDbContext>()
         .AddDefaultTokenProviders();
 
@@ -135,9 +135,11 @@ public class Program
 
         builder.Services.AddHttpClient<TranslationModelService>();
 
-        builder.Services.AddScoped<IFavoriteService, FavouriteService>();
+        builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 
         builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+
+        builder.Services.AddScoped<IUserService, UserService>();
 
 
 
